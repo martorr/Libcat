@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup  # used to parse the XML file from the Search API
 
 # Open and load workbook/worksheet
 
-# Your .xlsx file should be in same directory as this .py file
 workbookName = 'template.xlsx'  # Insert your Excel file name here.
 workbook = openpyxl.load_workbook(workbookName)
 
