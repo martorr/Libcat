@@ -1,20 +1,21 @@
-import openpyxl
-import requests
-from bs4 import BeautifulSoup
-
-# bs4 is used to parse the XML file from the Search API
+import openpyxl  # used for Excel
+import requests  # used to request info from site
+from bs4 import BeautifulSoup  # used to parse the XML file from the Search API
 
 # Open and load workbook/worksheet
-workbookName = 'template.xlsx'
-workbook = openpyxl.load_workbook(workbookName)
-worksheet = workbook['Sheet1']
 
-row = 2
-title = ""
-author = ""
-edition = ""
+# Your .xlsx file should be in same directory as this .py file
+workbookName = 'template.xlsx'  # Insert your Excel file name here.
+workbook = openpyxl.load_workbook(workbookName)
+
+worksheet = "Sheet"
+worksheet = workbook[worksheet]
+
+row = 2  # Skips title row
+
 response = 'y'
 while response == 'y':
+
     # requests info from OCLC WorldCat Search API
     book_ISBN = input("Book ISBN?: ")
     website_url = requests.get('http://classify.oclc.org/classify2/Classify?isbn=' + book_ISBN + '&summary=true').text
@@ -24,34 +25,31 @@ while response == 'y':
     for element in soup.find_all("classify"):
         for stat in element.find_all("work"):
             title = stat['title']
-            print(title)
+            print("Title: ", title)
+
             author = stat['author']
-            print(author)
+            print("Author: ", author)
+
             edition = stat['editions']
-            print(edition)
+            print("Edition: ", edition)
 
-    # TEST ISBN's
-    # 978-0-205-25949-6
-    # 978-1-2851990-2-3
-    # 1782197567
-
-    # input information from API
-
-
-    course_num = input("Course number?: ")
-
-    worksheet.cell(row=row, column=1).value = course_num
+    # insert information from API to Excel
     worksheet.cell(row=row, column=2).value = title
     worksheet.cell(row=row, column=3).value = author
     worksheet.cell(row=row, column=4).value = edition
     worksheet.cell(row=row, column=5).value = book_ISBN
 
-    response = input("Continue? (Y/N): ")
+    # If the user continues, move input to next row
+    response = input("\nContinue? (Y/N): ")
     if response == "N":
-        break
+        break 
     row += 1
 
-
+# Save and close the Excel workbook
 workbook.save(workbookName)
 workbook.close
 
+# TEST ISBN's
+# 978-0-205-25949-6: Art book
+# 978-1-2851990-2-3: Chem book
+# 1782197567: Random Tom Hardy book
